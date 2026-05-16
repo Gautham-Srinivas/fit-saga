@@ -519,10 +519,10 @@ function setupCoreEvents() {
   // reset & history
   document.getElementById("resetDayBtn").addEventListener("click", () => {
     const stats = computeCoreStats();
-    const confirmBank = confirm(
-      `Bank & reset?\n\nThis will add today's XP (${stats.dayXp}) to your lifetime XP, store the day in analytics, and clear all checkboxes.\nUse "Full Wipe" for a complete reset.`
+    const ok = confirm(
+      `Save Today & Clear?\n\nThis will:\n• Add today's XP (${stats.dayXp}) to your lifetime XP\n• Save today's stats into charts\n• Clear all today's checkboxes\n\nYour history and levels stay intact.`
     );
-    if (confirmBank) bankAndClear();
+    if (ok) bankAndClear();
   });
 
   document.getElementById("bankOnlyBtn").addEventListener("click", () => {
@@ -531,7 +531,7 @@ function setupCoreEvents() {
 
   document.getElementById("fullResetBtn").addEventListener("click", () => {
     const sure = confirm(
-      "Full Wipe? This clears all XP, streaks, notes, calories, hydration, weight log, and history."
+      "Reset All Progress?\n\nThis will wipe XP, streaks, notes, calories, hydration, weight log, and charts.\n\nUse this only if you want to start the entire saga from scratch."
     );
     if (!sure) return;
     state = structuredClone(defaultState);
@@ -802,6 +802,31 @@ async function summonCoach() {
     btn.textContent = "Summon Coach";
   }
 }
+
+let deferredInstallPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const btn = document.getElementById("installAppBtn");
+  if (btn) btn.hidden = false;
+});
+
+const installBtn = document.getElementById("installAppBtn");
+if (installBtn) {
+  installBtn.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    const res = await deferredInstallPrompt.prompt();
+    console.log("Install result:", res.outcome);
+    deferredInstallPrompt = null;
+    installBtn.hidden = true;
+  });
+}
+
+window.addEventListener("appinstalled", () => {
+  const btn = document.getElementById("installAppBtn");
+  if (btn) btn.hidden = true;
+});
 
 // Register service worker for PWA on GitHub Pages
 if ("serviceWorker" in navigator) {

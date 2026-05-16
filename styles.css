@@ -124,6 +124,14 @@ main {
   flex: 1;
   padding: 12px 10px 92px;
   overflow-y: auto;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  main {
+    max-width: 860px;
+    margin: 0 auto 92px;
+  }
 }
 
 .card {
@@ -439,8 +447,9 @@ input:focus {
 
 .reset-secondary-row .btn {
   flex: 1;
-  padding-inline: 4px;
-  font-size: 10px;
+  padding-inline: 6px;
+  font-size: 11px;
+  min-height: 32px;
 }
 
 .calorie-grid {

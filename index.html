@@ -35,6 +35,9 @@
         <button class="tab-btn" data-tab="nutrition">Galley</button>
         <button class="tab-btn" data-tab="analytics">Telemetry</button>
         <button class="tab-btn" data-tab="settings">Systems</button>
+        <button id="installAppBtn" class="btn btn-secondary btn-full" hidden>
+          Install fit-saga
+        </button>
       </nav>
 
       <main>
@@ -81,7 +84,11 @@
             </div>
             <p class="muted" id="weightChangeLine"></p>
           </div>
-
+          <p class="muted">
+            “Save Today & Clear” adds today’s XP to your lifetime total and
+            clears checkboxes. “Reset All Progress” wipes everything (use
+            rarely).
+          </p>
           <div class="card">
             <div class="card-title-row">
               <span class="icon">🔥</span>
@@ -509,13 +516,15 @@
         </div>
         <div class="reset-group">
           <button class="btn btn-primary btn-full" id="resetDayBtn">
-            Bank & Reset
+            Save Today & Clear
           </button>
           <div class="reset-secondary-row">
             <button class="btn btn-secondary" id="bankOnlyBtn">
-              Bank Only
+              Save Today
             </button>
-            <button class="btn btn-danger" id="fullResetBtn">Full Wipe</button>
+            <button class="btn btn-danger" id="fullResetBtn">
+              Reset All Progress
+            </button>
           </div>
         </div>
       </div>

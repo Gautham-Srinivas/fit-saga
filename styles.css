@@ -1,0 +1,508 @@
+:root {
+  /* Deep space background inspired by sci‑fi UIs */
+  --bg: #050914;
+  --card: #111624;
+
+  /* Starfleet / Mass Effect style accents */
+  --starfleet-blue: #1b4f8f;  /* primary accent */
+  --mass-cyan: #0eb9fe;       /* highlight */
+  --command-gold: #ffd700;    /* rank / badges */
+  --alert-red: #e61809;       /* alerts */
+
+  --text-main: #f5f7ff;
+  --text-muted: #a5b1d8;
+  --scanline: rgba(255, 255, 255, 0.03);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at top, #1b2839 0, #050914 60%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--scanline) 2px,
+      var(--scanline) 4px
+    );
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pa-logo {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.pa-header {
+  padding: 10px 14px 6px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(5, 9, 20, 0.96);
+  border-bottom: 3px solid var(--starfleet-blue);
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 18px rgba(0, 0, 0, 0.9);
+}
+
+.pa-subtitle {
+  font-size: 11px;
+  color: var(--mass-cyan);
+  margin-top: 4px;
+}
+
+.level-zone {
+  text-align: right;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.level-zone .level {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 11px;
+  color: var(--command-gold);
+}
+
+.title-text {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.pa-nav {
+  display: flex;
+  background: #090f1c;
+  border-bottom: 2px solid #1b2640;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 4px;
+  text-align: center;
+  font-size: 11px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  font-family: "Press Start 2P", system-ui;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tab-btn.active {
+  color: var(--mass-cyan);
+}
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mass-cyan), var(--command-gold));
+  box-shadow: 0 0 10px var(--mass-cyan);
+}
+
+main {
+  flex: 1;
+  padding: 12px 10px 92px;
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow:
+    0 0 0 2px #02040a,
+    0 6px 18px rgba(0, 0, 0, 0.7);
+  border: 1px solid #27324a;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.card-title-row span.icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: #050910;
+  color: var(--mass-cyan);
+  font-size: 13px;
+  border: 2px solid var(--starfleet-blue);
+}
+
+.card h2 {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.card p {
+  margin: 4px 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #10121e;
+  overflow: hidden;
+  margin-top: 6px;
+  border: 1px solid #333b5a;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mass-cyan), var(--command-gold));
+  width: 0%;
+  transition: width 0.25s ease-out;
+}
+
+.chips-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.chip span {
+  display: block;
+}
+
+.chip .value {
+  font-size: 12px;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.energy-level {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.energy-pill {
+  flex: 1;
+  height: 24px;
+  border-radius: 5px;
+  background: #25293a;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  border: 1px solid #424a6b;
+}
+
+.energy-pill.active {
+  background: var(--mass-cyan);
+  color: #050914;
+  font-weight: 600;
+  border-color: #000;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 60px;
+  border-radius: 10px;
+  border: 1px solid #333b5a;
+  background: #0a0f1f;
+  color: var(--text-main);
+  font-size: 12px;
+  padding: 8px 10px;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: var(--mass-cyan);
+  box-shadow: 0 0 0 1px var(--mass-cyan);
+}
+
+.quest-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 10px 2px 4px;
+  color: var(--mass-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: "Press Start 2P", system-ui;
+}
+
+.quest-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  background: #15192b;
+  margin-bottom: 6px;
+  border: 1px solid #303959;
+}
+
+.quest-item input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: var(--mass-cyan);
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.quest-main {
+  flex: 1;
+}
+
+.quest-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.quest-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.quest-meta {
+  font-size: 10px;
+  color: #8992c3;
+  margin-top: 2px;
+}
+
+.quest-xp {
+  font-size: 11px;
+  color: var(--command-gold);
+  white-space: nowrap;
+  padding-left: 4px;
+}
+
+.hydration-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  gap: 12px;
+}
+
+.hydration-controls button {
+  background: #1a1f33;
+  border: 1px solid #3a456b;
+  color: var(--text-main);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.hydration-controls button:active {
+  transform: scale(0.95);
+}
+
+.btn {
+  border-radius: 8px;
+  border: none;
+  padding: 8px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  touch-action: manipulation;
+  font-family: "Press Start 2P", system-ui;
+  text-transform: uppercase;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--mass-cyan), var(--command-gold));
+  color: #050914;
+  box-shadow: 0 0 14px rgba(14, 185, 254, 0.7);
+}
+
+.btn-secondary {
+  background: #15192b;
+  color: var(--text-main);
+  border: 1px solid #3a456b;
+}
+
+.btn-danger {
+  background: var(--alert-red);
+  color: #fff;
+}
+
+.coach-output {
+  font-size: 12px;
+  white-space: pre-wrap;
+  margin-top: 6px;
+  color: var(--text-main);
+}
+
+.coach-api-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.coach-api-row input {
+  border-radius: 8px;
+  border: 1px solid #333b5a;
+  padding: 8px 10px;
+  background: #050914;
+  color: var(--text-main);
+  font-size: 11px;
+  width: 100%;
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 9, 20, 0.97);
+  border-top: 3px solid #1b2640;
+  padding: 6px 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.bottom-bar .meta {
+  color: var(--text-muted);
+}
+
+.bottom-bar .meta div {
+  margin-bottom: 2px;
+}
+
+.reset-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  min-width: 150px;
+}
+
+.reset-secondary-row {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+
+.reset-secondary-row .btn {
+  flex: 1;
+  padding-inline: 4px;
+  font-size: 10px;
+}
+
+.calorie-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 6px 10px;
+  margin-top: 6px;
+  align-items: center;
+}
+
+.calorie-row label {
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.calorie-row small {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.calorie-row input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #333b5a;
+  padding: 6px 8px;
+  background: #050914;
+  color: var(--text-main);
+  font-size: 12px;
+}
+
+.badge-list {
+  list-style: none;
+  padding-left: 14px;
+  margin: 6px 0 0;
+}
+
+.badge-list li::before {
+  content: "▶ ";
+  color: var(--mass-cyan);
+}
+
+.badge-list li {
+  font-size: 11px;
+  color: var(--text-main);
+  margin: 2px 0;
+}
+
+/* Analytics charts */
+.chart-block {
+  margin-top: 10px;
+}
+
+.chart-block canvas {
+  width: 100% !important;
+  max-height: 220px;
+}
+
+/* Responsive container */
+@media (min-width: 768px) {
+  main {
+    max-width: 860px;
+    margin: 0 auto 92px;
+  }
+}

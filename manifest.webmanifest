@@ -1,0 +1,24 @@
+{
+  "name": "fit-saga",
+  "short_name": "fit-saga",
+  "id": "/fit-saga/",
+  "start_url": "/fit-saga/",
+  "scope": "/fit-saga/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050914",
+  "theme_color": "#050914",
+  "description": "fit-saga: space-themed life XP tracker for strength, cardio, diet, and daily routines.",
+  "icons": [
+    {
+      "src": "/fit-saga/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/fit-saga/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

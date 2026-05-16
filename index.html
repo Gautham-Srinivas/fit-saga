@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>fit-saga: Galactic Life XP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050914" />
+    <link rel="manifest" href="/fit-saga/manifest.webmanifest" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header class="pa-header">
+        <div>
+          <h1 class="pa-logo">FIT‑SAGA</h1>
+          <div class="pa-subtitle" id="zoneLabel">
+            Sector: Hill Footprints (Warmup Quadrant)
+          </div>
+        </div>
+        <div class="level-zone">
+          <div class="level">Rank <span id="levelText">1</span></div>
+          <div id="titleText" class="title-text">Cadet</div>
+          <div id="xpSummary">XP 0 / 100</div>
+        </div>
+      </header>
+
+      <nav class="pa-nav">
+        <button class="tab-btn active" data-tab="today">Bridge</button>
+        <button class="tab-btn" data-tab="training">Missions</button>
+        <button class="tab-btn" data-tab="nutrition">Galley</button>
+        <button class="tab-btn" data-tab="analytics">Telemetry</button>
+        <button class="tab-btn" data-tab="settings">Systems</button>
+      </nav>
+
+      <main>
+        <!-- TODAY -->
+        <section id="tab-today">
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">⛰</span>
+              <h2>Summit HUD</h2>
+            </div>
+            <p class="muted" id="todayDate"></p>
+            <div class="progress-bar">
+              <div class="progress-bar-inner" id="levelProgress"></div>
+            </div>
+            <p class="muted" id="xpLevelLine">
+              XP this level: 0 / 100 • 100 XP to next level
+            </p>
+            <p class="muted" id="lifetimeXpLine">Total XP: 0</p>
+            <p class="muted" id="streakLine">Streak: 0 days • Best: 0 days</p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">⚕</span>
+              <h2>Body Console</h2>
+            </div>
+            <div class="chips-row">
+              <div class="chip">
+                <span>Height</span>
+                <span class="value">171 cm</span>
+              </div>
+              <div class="chip">
+                <span>Start Wt</span>
+                <span class="value" id="startWeightChip">90.0 kg</span>
+              </div>
+              <div class="chip">
+                <span>Current Wt</span>
+                <span class="value" id="currentWeightChip">90.0 kg</span>
+              </div>
+              <div class="chip">
+                <span>BMI</span>
+                <span class="value" id="bmiValue">–</span>
+              </div>
+            </div>
+            <p class="muted" id="weightChangeLine"></p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🔥</span>
+              <h2>Climb Momentum</h2>
+            </div>
+            <p id="dayXpLine">Day XP: 0</p>
+            <div class="progress-bar">
+              <div class="progress-bar-inner" id="momentumProgress"></div>
+            </div>
+            <p class="muted">
+              Aim for ~140 XP on strength days for full clears.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🕒</span>
+              <h2>Chrono Routine (Wake → Sleep)</h2>
+            </div>
+            <p class="muted">
+              Anchor your day from wake‑up to sleep. Clear these and the rest of
+              the habits follow.
+            </p>
+            <div id="routineContainer"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🏅</span>
+              <h2>Badge Deck</h2>
+            </div>
+            <p class="muted">
+              Auto‑earned titles based on XP, streaks, cardio, core, and diet
+              discipline.
+            </p>
+            <ul class="badge-list" id="badgeList"></ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🤖</span>
+              <h2>Perplexity Coach</h2>
+            </div>
+            <p class="muted">
+              Uses Perplexity Sonar Pro (OpenAI‑compatible) for personalized
+              coaching. API key is stored only in this browser.
+            </p>
+            <div class="coach-api-row">
+              <input
+                type="password"
+                id="pplxKeyInput"
+                placeholder="Perplexity API key (pplx-...)"
+              />
+              <button class="btn btn-secondary btn-full" id="savePplxKeyBtn">
+                Save API Key
+              </button>
+            </div>
+            <button
+              class="btn btn-primary btn-full"
+              id="summonCoachBtn"
+              style="margin-top: 8px"
+            >
+              Summon Coach
+            </button>
+            <p class="coach-output" id="coachOutput">
+              Tap "Summon Coach" for 4–6 sharp bullets tailored to today.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🧠</span>
+              <h2>Mindset Cartridge</h2>
+            </div>
+            <p class="muted">
+              Set a clear intention for today's training, work, or recovery.
+            </p>
+            <textarea
+              id="intentionInput"
+              placeholder="e.g., Own split squat form and stay off phone during rucking."
+            ></textarea>
+            <p class="muted" style="margin-top: 8px">
+              Energy Check (1–5): <span id="energyLabel">3</span>
+            </p>
+            <div class="energy-level" id="energyRow"></div>
+            <p class="muted">
+              Low energy? Downshift to mobility, breathing, and technique
+              instead of skipping.
+            </p>
+          </div>
+        </section>
+
+        <!-- TRAINING -->
+        <section id="tab-training" style="display: none">
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🎯</span>
+              <h2>Training Quests</h2>
+            </div>
+            <p class="muted" id="todayLabel"></p>
+            <p class="muted">
+              Strength, cardio, recovery, and lifestyle quests for today. Each
+              one earns XP.
+            </p>
+          </div>
+          <div id="questsContainer"></div>
+        </section>
+
+        <!-- NUTRITION -->
+        <section id="tab-nutrition" style="display: none">
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🥗</span>
+              <h2>Campfire Kitchen</h2>
+            </div>
+            <p class="muted">
+              Simple calorie awareness + diet quests. Just enough detail to keep
+              fat loss on track.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">🍽</span>
+              <h2>Calorie Radar</h2>
+            </div>
+            <p class="muted">
+              Estimate today’s intake. Numbers stay on your device only.
+            </p>
+            <div class="calorie-grid">
+              <div class="calorie-row">
+                <label for="calBreakfast"
+                  >Breakfast<small>eggs, dosa, oats…</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="calBreakfast"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="kcal"
+                />
+              </div>
+
+              <div class="calorie-row">
+                <label for="calLunch"
+                  >Lunch<small>rice, sambar, chicken…</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="calLunch"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="kcal"
+                />
+              </div>
+
+              <div class="calorie-row">
+                <label for="calDinner"
+                  >Dinner<small>lean, light, early</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="calDinner"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="kcal"
+                />
+              </div>
+
+              <div class="calorie-row">
+                <label for="calSnacks"
+                  >Snacks & Drinks<small>snacks, tea, desserts</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="calSnacks"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="kcal"
+                />
+              </div>
+
+              <div class="calorie-row">
+                <label for="calTarget"
+                  >Daily Target<small>fat‑loss intake goal</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="calTarget"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="kcal"
+                />
+              </div>
+            </div>
+            <p class="muted" id="calorieSummaryLine"></p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">⚖</span>
+              <h2>Weight Tracker</h2>
+            </div>
+            <p class="muted">
+              Log today’s weight in kg. This updates BMI and net change since
+              your 90 kg start.
+            </p>
+            <div class="calorie-grid">
+              <div class="calorie-row">
+                <label for="weightInput"
+                  >Today's Weight<small>enter once per day</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="weightInput"
+                  type="number"
+                  inputmode="decimal"
+                  step="0.1"
+                  placeholder="kg"
+                />
+              </div>
+            </div>
+            <p class="muted" id="weightSummaryLine"></p>
+          </div>
+
+          <div id="dietQuestsContainer"></div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">💧</span>
+              <h2>Hydration Gauge</h2>
+            </div>
+            <p class="muted">
+              Track water in 250 ml cups. 12–16 cups ≈ 3–4 liters.
+            </p>
+            <div class="hydration-row">
+              <div>Cups today: <span id="cupsLabel">0</span></div>
+              <div class="hydration-controls">
+                <button id="decCupBtn">−</button>
+                <button id="incCupBtn">+</button>
+              </div>
+            </div>
+            <div class="progress-bar" style="margin-top: 6px">
+              <div class="progress-bar-inner" id="hydrationProgress"></div>
+            </div>
+            <p class="muted">
+              Drink first when cravings hit, then wait 10 minutes before
+              deciding to eat.
+            </p>
+          </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="tab-analytics" style="display: none">
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">📊</span>
+              <h2>Progress Charts</h2>
+            </div>
+            <p class="muted">
+              Weekly XP, weight trend, and calorie trend. Banking days builds
+              these charts.
+            </p>
+            <div class="chart-block">
+              <p class="muted">XP by Day (last 14 days)</p>
+              <canvas id="xpChart"></canvas>
+            </div>
+            <div class="chart-block">
+              <p class="muted">Weight Trend</p>
+              <canvas id="weightChart"></canvas>
+            </div>
+            <div class="chart-block">
+              <p class="muted">Calories vs Target</p>
+              <canvas id="calorieChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">📑</span>
+              <h2>Weekly Report</h2>
+            </div>
+            <p class="muted" id="weeklyReportLine"></p>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="tab-settings" style="display: none">
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">⏰</span>
+              <h2>Reminders & Alerts</h2>
+            </div>
+            <p class="muted">
+              Browser notifications work while this page (or PWA install) is
+              open in the background. Fully closed browser tabs can’t fire
+              timers without a push server.
+            </p>
+            <div class="calorie-grid">
+              <div class="calorie-row">
+                <label>
+                  Enable Notifications
+                  <small>Ask browser for permission</small>
+                </label>
+              </div>
+              <div class="calorie-row">
+                <input type="checkbox" id="notifyEnabled" />
+              </div>
+
+              <div class="calorie-row">
+                <label for="remHydration"
+                  >Hydration Ping<small>HH:MM (24h)</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input id="remHydration" type="time" />
+              </div>
+
+              <div class="calorie-row">
+                <label for="remTraining"
+                  >Training Block<small>HH:MM (24h)</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input id="remTraining" type="time" />
+              </div>
+
+              <div class="calorie-row">
+                <label for="remSleep"
+                  >Sleep Wind‑Down<small>HH:MM (24h)</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input id="remSleep" type="time" />
+              </div>
+            </div>
+            <p class="muted">
+              Tip: Add this page to your home screen so reminders work like a
+              lightweight PWA.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">➕</span>
+              <h2>Custom Quests</h2>
+            </div>
+            <p class="muted">
+              Add your own habits. They’ll appear under “Custom” in the Training
+              tab.
+            </p>
+            <div class="calorie-grid">
+              <div class="calorie-row">
+                <label for="customQuestTitle"
+                  >Quest Name<small>e.g., 10‑min stretch</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input id="customQuestTitle" type="text" placeholder="Title" />
+              </div>
+
+              <div class="calorie-row">
+                <label for="customQuestXp"
+                  >XP Reward<small>e.g., 10–30</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="customQuestXp"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="XP"
+                />
+              </div>
+
+              <div class="calorie-row">
+                <label for="customQuestWhen"
+                  >When<small>label, e.g., Morning</small></label
+                >
+              </div>
+              <div class="calorie-row">
+                <input
+                  id="customQuestWhen"
+                  type="text"
+                  placeholder="Morning, Evening…"
+                />
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-full" id="addCustomQuestBtn">
+              Add Custom Quest
+            </button>
+            <p class="muted" id="customQuestInfo"></p>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <span class="icon">💾</span>
+              <h2>Data Safety</h2>
+            </div>
+            <p class="muted">
+              All data is stored in this browser using localStorage. You can
+              export a backup JSON file.
+            </p>
+            <button class="btn btn-secondary btn-full" id="exportDataBtn">
+              Export Data JSON
+            </button>
+            <p class="muted">
+              To restore, open DevTools console and paste the JSON into
+              <code>localStorage["peakAscentStateRetroV1"]</code>.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <div class="bottom-bar">
+        <div class="meta">
+          <div id="dayMeta">Day XP: 0</div>
+          <div id="totalMeta">Total XP: 0 • Level 1</div>
+        </div>
+        <div class="reset-group">
+          <button class="btn btn-primary btn-full" id="resetDayBtn">
+            Bank & Reset
+          </button>
+          <div class="reset-secondary-row">
+            <button class="btn btn-secondary" id="bankOnlyBtn">
+              Bank Only
+            </button>
+            <button class="btn btn-danger" id="fullResetBtn">Full Wipe</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="state.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
